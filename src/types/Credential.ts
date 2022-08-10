@@ -1,5 +1,8 @@
-export interface Credential {
+export default interface Credential {
   clientId: string;
   clientSecret: string;
-  requestUrl: string;
+  grantType: 'client_credentials' | 'authorization_code';
+  /* Optionals */
+  requestUrl?: string;
+  redirectUrl?: string;
 }
