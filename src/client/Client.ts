@@ -1,3 +1,9 @@
+import CredentialManager from '@/managers/CredentialManager';
+
 export default class THXClient {
-  constructor(clientID: string, clientSecret: string, url: string) {}
+  credential: CredentialManager;
+
+  constructor(clientId: string, clientSecret: string, requestUrl: string) {
+    this.credential = new CredentialManager(this, { clientId, clientSecret, requestUrl });
+  }
 }

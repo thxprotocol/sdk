@@ -1,7 +1,8 @@
-import THXClient from 'client/Client';
+import THXClient from '@/client/Client';
+import type { Credential } from '@/types';
+
 import CacheManager from './CacheManager';
 
-import type { Credential } from 'types';
 
 export default class CredentialManager extends CacheManager<Credential> {
   constructor(client: THXClient, credential: Credential) {

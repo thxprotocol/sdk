@@ -1,4 +1,4 @@
-import THXClient from 'client/Client';
+import THXClient from '@/client/Client';
 import BaseManager from './BaseManager';
 
 class CacheManager<DataType> extends BaseManager {
