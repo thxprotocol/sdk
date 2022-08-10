@@ -28,4 +28,14 @@ export default class THXClient {
     this.credential = new CredentialManager(this, credential);
     this.userManager = new UserManager(this, userManager);
   }
+
+  async signin() {
+    await this.userManager.cached.signinRedirect({
+      extraQueryParams: {
+        channel: 0,
+        prompt: 'connect',
+        return_url: this.credential.cached.redirectUrl!,
+      },
+    });
+  }
 }

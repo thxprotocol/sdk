@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prepare": "npm run build",
-    "build": "tsc"
+    "build": "rimraf dist && tsc && rollup -c rollup.config.js",
+    "prepare": "npm run build"
   },
   "author": "",
   "license": "ISC",
@@ -14,7 +14,12 @@
     "oidc-client-ts": "^2.0.5"
   },
   "devDependencies": {
+    "@open-wc/building-rollup": "^2.0.2",
     "@types/node": "^18.6.5",
+    "deepmerge": "^4.2.2",
+    "jest": "^28.1.3",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.77.2",
     "typescript": "^4.7.4"
   }
 }
