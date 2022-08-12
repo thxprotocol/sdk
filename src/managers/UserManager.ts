@@ -6,4 +6,14 @@ export default class UserManager extends CacheManager<BaseUserManager> {
   constructor(client: THXClient, user: BaseUserManager) {
     super(client, user);
   }
+
+  async signinRedirectCallback() {
+    try {
+      const user = await this.cached.signinRedirectCallback();
+      this.client.session.update({ user });
+      return user;
+    } catch (e) {
+      console.error(e);
+    }
+  }
 }
