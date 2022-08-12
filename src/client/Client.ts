@@ -35,18 +35,8 @@ export default class THXClient {
 
     /* Register listeners */
     const callback = async () => {
-      const haveCode = window.location.search.includes('code');
-      if (!haveCode) {
-        const user = await this.userManager.getUser();
-        if (user) {
-          console.log(user);
-        }
-      } else {
-        const user = await this.userManager.signinRedirectCallback();
-        if (user) {
-          console.log(user);
-        } // Cancel sign in at this point
-      }
+      await this.initialize();
+      window.removeEventListener('load', callback);
     };
 
     if (window) {
@@ -54,16 +44,27 @@ export default class THXClient {
     }
   }
 
-  async signin() {
-    const haveCode = window.location.search.includes('code');
-    const user = await this.userManager.getUser();
+  private async initialize() {
+    let haveUser = false;
 
-    if (haveCode) {
-      await this.userManager.signinRedirectCallback();
-      return;
+    const isRedirectBack = window.location.search.includes('code');
+    if (isRedirectBack) {
+      const user = await this.userManager.signinRedirectCallback();
+      if (window.history) {
+        window.history.pushState({}, document.title, window.location.pathname);
+      }
+      if (user) haveUser = true;
+    } else {
+      const user = await this.userManager.getUser();
+      if (user) haveUser = true;
     }
 
-    if (user) return;
+    return haveUser;
+  }
+
+  async signin() {
+    const haveUser = await this.initialize();
+    if (haveUser) return;
 
     await this.userManager.cached.signinRedirect({
       extraQueryParams: {
@@ -71,12 +72,4 @@ export default class THXClient {
       },
     });
   }
-
-  // private async windowSigninRedirectCallback() {
-  //   console.log('Test');
-  //   const user = await this.userManager.signinRedirectCallback();
-  //   if (!user) return;
-
-  //   window.removeEventListener('load', this.windowSigninRedirectCallback);
-  // }
 }
