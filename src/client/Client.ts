@@ -1,10 +1,10 @@
 import { UserManager as BaseUserManager, UserManagerSettings } from 'oidc-client-ts';
 
-import { SCOPES, URL_CONFIG } from '@/configs';
-import CredentialManager from '@/managers/CredentialManager';
-import UserManager from '@/managers/UserManager';
+import { SCOPES, URL_CONFIG } from '../configs';
+import CredentialManager from '../managers/CredentialManager';
+import UserManager from '../managers/UserManager';
 
-import type { Credential } from '@/types';
+import type { Credential } from '../types';
 export default class THXClient {
   userManager: UserManager;
   credential: CredentialManager;
@@ -18,7 +18,7 @@ export default class THXClient {
       response_type: 'code',
       post_logout_redirect_uri: credential.redirectUrl!,
       loadUserInfo: false,
-      scope: SCOPES.join(' '),
+      scope: 'openid', //TO-DO: Make this configable
     };
 
     /* Mapped values */

@@ -1,5 +1,5 @@
-import THXClient from '@/client/Client';
-import type { Credential } from '@/types';
+import THXClient from '../client/Client';
+import type { Credential } from '../types';
 
 import CacheManager from './CacheManager';
 
