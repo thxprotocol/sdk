@@ -16,4 +16,10 @@ export default class UserManager extends CacheManager<BaseUserManager> {
       console.error(e);
     }
   }
+
+  async getUser() {
+    const user = await this.cached.getUser();
+    if (user) this.client.session.update({ user });
+    return user;
+  }
 }

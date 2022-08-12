@@ -7,8 +7,6 @@ import UserManager from '../managers/UserManager';
 
 import type { Credential } from '../types';
 export default class THXClient {
-  initialized = false;
-
   userManager: UserManager;
   credential: CredentialManager;
   session: SessionManager;
@@ -36,27 +34,42 @@ export default class THXClient {
     this.session = new SessionManager(this, {});
 
     /* Register listeners */
+    const callback = async () => {
+      const haveCode = window.location.search.includes('code');
+      if (!haveCode) {
+        const user = await this.userManager.getUser();
+        if (user) {
+          console.log(user);
+        }
+      } else {
+        const user = await this.userManager.signinRedirectCallback();
+        if (user) {
+          console.log(user);
+        } // Cancel sign in at this point
+      }
+    };
 
     if (window) {
-      window.addEventListener('load', async () => {
-        await this.initialize();
-      });
+      window.addEventListener('load', callback);
     }
   }
 
   async signin() {
-    if (!this.initialized) return await this.initialize();
+    const haveCode = window.location.search.includes('code');
+    const user = await this.userManager.getUser();
+
+    if (haveCode) {
+      await this.userManager.signinRedirectCallback();
+      return;
+    }
+
+    if (user) return;
+
     await this.userManager.cached.signinRedirect({
       extraQueryParams: {
         return_url: this.credential.cached.redirectUrl!,
       },
     });
-  }
-
-  private async initialize() {
-    /* CHECK IF HAVE CODE IN URL AND PROCESS IT */
-    await this.userManager.signinRedirectCallback();
-    this.initialized = true;
   }
 
   // private async windowSigninRedirectCallback() {
