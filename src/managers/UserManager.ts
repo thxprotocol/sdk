@@ -14,6 +14,7 @@ export default class UserManager extends CacheManager<BaseUserManager> {
       return user;
     } catch (e) {
       console.error(e);
+      return null
     }
   }
 

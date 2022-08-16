@@ -1,5 +1,4 @@
 import Web3 from 'web3';
-import CustomAuth, { TORUS_NETWORK_TYPE } from '@toruslabs/customauth';
 
 export function mockPrivateKeyForSubject(subject: string) {
   const pkey = localStorage.getItem(`mock:privateKey:${subject}`);
@@ -10,3 +9,4 @@ export function mockPrivateKeyForSubject(subject: string) {
 
   return account.privateKey;
 }
+

@@ -1,13 +1,34 @@
-import merge from 'deepmerge';
-import { createBasicConfig } from '@open-wc/building-rollup';
-import typescript from '@rollup/plugin-typescript';
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
+import json from '@rollup/plugin-json';
+import babel from '@rollup/plugin-babel';
 
-const baseConfig = createBasicConfig();
+const extensions = ['.js', '.jsx', '.ts', '.tsx'];
 
-export default merge(baseConfig, {
-  input: './dist/index.js',
-  plugins: [typescript()],
+export default {
+  input: './src/index.ts',
+
+  // Specify here external modules which you don't want to include in your bundle (for instance: 'lodash', 'moment' etc.)
+  // https://rollupjs.org/guide/en/#external
+  external: ['@toruslabs/customauth'],
+
+  plugins: [
+    // Allows node_modules resolution
+    resolve({ extensions }),
+
+    // Allow bundling cjs modules. Rollup doesn't understand cjs
+    commonjs(),
+    json(),
+
+    // Compile TypeScript/JavaScript files
+    babel({
+      extensions,
+      babelHelpers: 'bundled',
+      include: ['src/**/*'],
+    }),
+  ],
+
   output: {
     dir: 'dist',
   },
-});
+};
