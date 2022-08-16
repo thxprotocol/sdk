@@ -1,6 +1,7 @@
 import { UserManager as BaseUserManager, UserManagerSettings } from 'oidc-client-ts';
 
-import { SCOPES, URL_CONFIG } from '../configs';
+import { URL_CONFIG } from '../configs';
+import TorusManager from '../managers/TorusManager';
 import CredentialManager from '../managers/CredentialManager';
 import SessionManager from '../managers/SessionManager';
 import UserManager from '../managers/UserManager';
@@ -11,25 +12,28 @@ export default class THXClient {
   credential: CredentialManager;
   session: SessionManager;
 
-  constructor(credential: Credential) {
+  /* Internal inits */
+  torusManager: TorusManager = null!; // Init inside Credential
+
+  constructor({ scopes = 'openid', torusNetwork = 'testnet', ...rest }: Credential) {
     const settings: UserManagerSettings = {
       authority: URL_CONFIG['AUTH_URL'],
-      client_id: credential.clientId,
-      client_secret: credential.clientSecret,
-      redirect_uri: credential.redirectUrl!,
+      client_id: rest.clientId,
+      client_secret: rest.clientSecret,
+      redirect_uri: rest.redirectUrl!,
       response_type: 'code',
-      post_logout_redirect_uri: credential.redirectUrl!,
-      resource: credential.redirectUrl!,
+      post_logout_redirect_uri: rest.redirectUrl!,
+      resource: rest.redirectUrl!,
       automaticSilentRenew: true,
       loadUserInfo: false,
-      scope: 'openid', //TO-DO: Make this configable
+      scope: scopes,
     };
 
     /* Mapped values */
     const userManager = new BaseUserManager(settings);
 
     /** Init managers */
-    this.credential = new CredentialManager(this, credential);
+    this.credential = new CredentialManager(this, { ...rest, scopes, torusNetwork });
     this.userManager = new UserManager(this, userManager);
     this.session = new SessionManager(this, {});
 

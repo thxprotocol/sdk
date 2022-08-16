@@ -15,7 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "@toruslabs/customauth": "^10.1.0",
-    "oidc-client-ts": "^2.0.5"
+    "oidc-client-ts": "^2.0.5",
+    "web3": "^1.7.5"
   },
   "devDependencies": {
     "@open-wc/building-rollup": "^2.0.2",
