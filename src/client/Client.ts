@@ -8,12 +8,14 @@ import UserManager from '../managers/UserManager';
 
 import type { Credential } from '../types';
 export default class THXClient {
+
+  /* Internal managers */
+  private session: SessionManager;
   private userManager: UserManager;
   private credential: CredentialManager;
-  private session: SessionManager;
+  private torusManager: TorusManager = null!;
 
-  /* Internal inits */
-  private torusManager: TorusManager = null!; // Init inside Credential
+  /* External managers */
 
   constructor({ scopes = 'openid', torusNetwork = 'testnet', ...rest }: Credential) {
     const settings: UserManagerSettings = {
