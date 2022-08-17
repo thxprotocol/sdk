@@ -2,6 +2,7 @@
 
 const path = require('path');
 const webpack = require('webpack');
+const TypescriptDeclarationPlugin = require('typescript-declaration-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV == 'production';
 
@@ -23,6 +24,9 @@ const config = {
     }),
     new webpack.ProvidePlugin({
       process: 'process/browser',
+    }),
+    new TypescriptDeclarationPlugin({
+      // Options for TypescriptDeclarationPlugin (see below)
     }),
   ],
   module: {
