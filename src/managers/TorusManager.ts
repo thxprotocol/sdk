@@ -1,9 +1,9 @@
 import { User } from 'oidc-client-ts';
 
-import { TORUS_VERIFIER } from '@/configs';
-import { THXClient } from '@/index';
 import CustomAuth, { CustomAuthArgs, TorusKey } from '@toruslabs/customauth';
 
+import { TORUS_VERIFIER } from '../configs';
+import { THXClient } from '../index';
 import CacheManager from './CacheManager';
 
 class TorusManager extends CacheManager<CustomAuth> {
