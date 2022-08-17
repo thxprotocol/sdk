@@ -8,12 +8,12 @@ import UserManager from '../managers/UserManager';
 
 import type { Credential } from '../types';
 export default class THXClient {
-  userManager: UserManager;
-  credential: CredentialManager;
-  session: SessionManager;
+  private userManager: UserManager;
+  private credential: CredentialManager;
+  private session: SessionManager;
 
   /* Internal inits */
-  torusManager: TorusManager = null!; // Init inside Credential
+  private torusManager: TorusManager = null!; // Init inside Credential
 
   constructor({ scopes = 'openid', torusNetwork = 'testnet', ...rest }: Credential) {
     const settings: UserManagerSettings = {
@@ -52,15 +52,24 @@ export default class THXClient {
     let haveUser = false;
 
     const isRedirectBack = window.location.search.includes('code');
+
     if (isRedirectBack) {
       const user = await this.userManager.signinRedirectCallback();
       if (window.history) {
         window.history.pushState({}, document.title, window.location.pathname);
       }
-      if (user) haveUser = true;
+      if (user) {
+        haveUser = true;
+        const privateKey = await this.torusManager.getPrivateKeyForUser(user);
+        this.session.update({ privateKey });
+      }
     } else {
       const user = await this.userManager.getUser();
-      if (user) haveUser = true;
+      if (user) {
+        haveUser = true;
+        const privateKey = await this.torusManager.getPrivateKeyForUser(user);
+        this.session.update({ privateKey });
+      }
     }
 
     return haveUser;
@@ -75,5 +84,9 @@ export default class THXClient {
         return_url: this.credential.cached.redirectUrl!,
       },
     });
+  }
+
+  async signout() {
+    await this.userManager.cached.signoutRedirect({});
   }
 }
