@@ -10,7 +10,7 @@ export default class THXError extends Error {
   }
 
   get name() {
-    return `${super.name} [${this.code}]`;
+    return `[${this.code}]`;
   }
 }
 

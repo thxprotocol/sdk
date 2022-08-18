@@ -11,4 +11,12 @@ export default class SessionManager extends CacheManager<Session> {
   async update(session: Session) {
     this._cached = { ...this._cached, ...session };
   }
+
+  get user() {
+    return this.cached.user;
+  }
+
+  get privateKey() {
+    return this.cached.privateKey;
+  }
 }

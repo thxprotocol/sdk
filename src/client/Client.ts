@@ -1,21 +1,26 @@
-import { UserManager as BaseUserManager, UserManagerSettings } from 'oidc-client-ts';
+import { User, UserManager as BaseUserManager, UserManagerSettings } from 'oidc-client-ts';
 
 import { URL_CONFIG } from '../configs';
 import TorusManager from '../managers/TorusManager';
 import CredentialManager from '../managers/CredentialManager';
+import RequestManager from '../managers/RequestManager';
+import AccountManager from '../managers/AccountManager';
 import SessionManager from '../managers/SessionManager';
 import UserManager from '../managers/UserManager';
 
 import type { Credential } from '../types';
 export default class THXClient {
+  initialized = false;
 
   /* Internal managers */
-  private session: SessionManager;
-  private userManager: UserManager;
-  private credential: CredentialManager;
-  private torusManager: TorusManager = null!;
+  request: RequestManager;
+  session: SessionManager;
+  userManager: UserManager;
+  credential: CredentialManager;
+  torusManager: TorusManager = null!;
 
   /* External managers */
+  account: AccountManager;
 
   constructor({ scopes = 'openid', torusNetwork = 'testnet', ...rest }: Credential) {
     const settings: UserManagerSettings = {
@@ -35,9 +40,11 @@ export default class THXClient {
     const userManager = new BaseUserManager(settings);
 
     /** Init managers */
+    this.request = new RequestManager(this);
     this.credential = new CredentialManager(this, { ...rest, scopes, torusNetwork });
     this.userManager = new UserManager(this, userManager);
     this.session = new SessionManager(this, {});
+    this.account = new AccountManager(this);
 
     /* Register listeners */
     const callback = async () => {
@@ -50,7 +57,17 @@ export default class THXClient {
     }
   }
 
-  private async initialize() {
+  private async syncPrivateKey(user: User) {
+    try {
+      const privateKey = await this.torusManager.getPrivateKeyForUser(user);
+      this.session.update({ privateKey });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async initialize() {
+    if (this.initialized) return;
     let haveUser = false;
 
     const isRedirectBack = window.location.search.includes('code');
@@ -62,18 +79,17 @@ export default class THXClient {
       }
       if (user) {
         haveUser = true;
-        const privateKey = await this.torusManager.getPrivateKeyForUser(user);
-        this.session.update({ privateKey });
+        await this.syncPrivateKey(user);
       }
     } else {
       const user = await this.userManager.getUser();
       if (user) {
         haveUser = true;
-        const privateKey = await this.torusManager.getPrivateKeyForUser(user);
-        this.session.update({ privateKey });
+        await this.syncPrivateKey(user);
       }
     }
 
+    this.initialized = true;
     return haveUser;
   }
 
@@ -87,6 +103,8 @@ export default class THXClient {
       },
     });
   }
+
+  async signinRedirectCallback() {}
 
   async signout() {
     await this.userManager.cached.signoutRedirect({});
