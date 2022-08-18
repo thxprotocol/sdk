@@ -104,9 +104,7 @@ export default class THXClient {
     });
   }
 
-  async signinRedirectCallback() {}
-
-  async signout() {
+  async xw() {
     await this.userManager.cached.signoutRedirect({});
   }
 }
