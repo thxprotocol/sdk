@@ -24,10 +24,7 @@ const config = {
     }),
     new webpack.ProvidePlugin({
       process: 'process/browser',
-    }),
-    new TypescriptDeclarationPlugin({
-      // Options for TypescriptDeclarationPlugin (see below)
-    }),
+    })
   ],
   module: {
     rules: [

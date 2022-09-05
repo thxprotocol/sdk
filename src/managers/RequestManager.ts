@@ -14,11 +14,13 @@ class RequestManager extends CacheManager<Axios> {
     });
 
     axiosClient.interceptors.request.use((config) => {
-      const user = this.client.session.cached.user;
-      if (user && !user.expired) {
+      const accessToken = this.client.session.cached.accessToken;
+
+      if (accessToken) {
         config.headers = config.headers || {};
-        config.headers.Authorization = `Bearer ${user.access_token}`;
+        config.headers.Authorization = `Bearer ${accessToken}`;
       }
+
       return config;
     });
 

@@ -11,7 +11,7 @@
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
     "build:types": "tsc --emitDeclarationOnly",
-    "build": "rimraf ./dist && npm run build:js",
+    "build": "rimraf ./dist && npm run build:js && build:types",
     "build:js": "webpack --mode=production --node-env=production",
     "build:dev": "webpack --mode=development",
     "build:prod": "webpack --mode=production --node-env=production",

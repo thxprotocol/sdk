@@ -11,6 +11,7 @@ import UserManager from '../managers/UserManager';
 import type { Credential } from '../types';
 export default class THXClient {
   initialized = false;
+  authenticated = false;
 
   /* Internal managers */
   request: RequestManager;
@@ -45,19 +46,9 @@ export default class THXClient {
     this.userManager = new UserManager(this, userManager);
     this.session = new SessionManager(this, {});
     this.account = new AccountManager(this);
-
-    /* Register listeners */
-    const callback = async () => {
-      await this.initialize();
-      window.removeEventListener('load', callback);
-    };
-
-    if (window) {
-      window.addEventListener('load', callback);
-    }
   }
 
-  private async syncPrivateKey(user: User) {
+  public async syncPrivateKey(user: User) {
     try {
       const privateKey = await this.torusManager.getPrivateKeyForUser(user);
       this.session.update({ privateKey });
@@ -66,36 +57,21 @@ export default class THXClient {
     }
   }
 
-  async initialize() {
+  public async init() {
     if (this.initialized) return;
-    let haveUser = false;
 
-    const isRedirectBack = window.location.search.includes('code');
+    const grantType = this.credential.cached.grantType;
 
-    if (isRedirectBack) {
-      const user = await this.userManager.signinRedirectCallback();
-      if (window.history) {
-        window.history.pushState({}, document.title, window.location.pathname);
-      }
-      if (user) {
-        haveUser = true;
-        await this.syncPrivateKey(user);
-      }
+    if (grantType === 'authorization_code') {
+      return await this.credential.authorizationCode();
     } else {
-      const user = await this.userManager.getUser();
-      if (user) {
-        haveUser = true;
-        await this.syncPrivateKey(user);
-      }
+      return await this.credential.clientCredential();
     }
-
-    this.initialized = true;
-    return haveUser;
   }
 
-  async signin() {
-    const haveUser = await this.initialize();
-    if (haveUser) return;
+  public async signin() {
+    const grantType = this.credential.cached.grantType;
+    if (grantType === 'client_credentials') return;
 
     await this.userManager.cached.signinRedirect({
       extraQueryParams: {
@@ -104,7 +80,10 @@ export default class THXClient {
     });
   }
 
-  async xw() {
+  public async signout() {
+    const grantType = this.credential.cached.grantType;
+    if (grantType === 'client_credentials') return;
+
     await this.userManager.cached.signoutRedirect({});
   }
 }
