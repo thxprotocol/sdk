@@ -2,7 +2,6 @@
 
 const path = require('path');
 const webpack = require('webpack');
-const TypescriptDeclarationPlugin = require('typescript-declaration-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV == 'production';
 

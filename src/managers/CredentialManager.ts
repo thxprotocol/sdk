@@ -36,25 +36,30 @@ export default class CredentialManager extends CacheManager<Credential> {
   }
 
   public async clientCredential() {
-    const toEncodeParam = `${this.cached.clientId}:${this.cached.clientSecret}`;
-    const encodedParam = Buffer.from(toEncodeParam).toString('base64');
-    const code = 'Basic ' + encodedParam;
+    try {
+      const toEncodeParam = `${this.cached.clientId}:${this.cached.clientSecret}`;
+      const encodedParam = Buffer.from(toEncodeParam).toString('base64');
+      const code = 'Basic ' + encodedParam;
 
-    const response = await axios({
-      url: 'https://auth.thx.network/token',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: code,
-      },
-      data: {
-        grant_type: 'client_credentials',
-        scope: this.cached.scopes,
-      },
-    });
+      const params = new URLSearchParams();
+      params.append('grant_type', 'client_credentials');
+      params.append('scope', this.cached.scopes || '');
 
-    this.client.session.update({ accessToken: response.data['access_token'] });
+      const response = await axios({
+        url: 'https://auth.thx.network/token',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: code,
+        },
+        data: params,
+      });
 
-    return true;
+      this.client.session.update({ accessToken: response.data['access_token'] });
+
+      return true;
+    } catch {
+      return false;
+    }
   }
 }

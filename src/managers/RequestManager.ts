@@ -28,7 +28,7 @@ class RequestManager extends CacheManager<Axios> {
   }
 
   private async preflight() {
-    if (this.client.session.cached.user) return;
+    if (this.client.session.cached.user || this.client.session.cached.accessToken) return;
     throw new THXError(ErrorCode.SIGN_IN_REQUIRED);
   }
 
