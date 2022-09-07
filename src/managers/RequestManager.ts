@@ -1,30 +1,17 @@
-import axios, { Axios, AxiosRequestConfig } from 'axios';
 
 import THXError from '../errors/Error';
 import ErrorCode from '../errors/ErrorCode';
 import { THXClient } from '../index';
-import CacheManager from './CacheManager';
+import BaseManager from './BaseManager';
 
-class RequestManager extends CacheManager<Axios> {
+class RequestManager extends BaseManager {
   constructor(client: THXClient) {
-    const axiosClient = axios.create({
-      maxRedirects: 0,
-      baseURL: 'https://api.thx.network/v1',
-      withCredentials: true,
-    });
+    super(client);
+  }
 
-    axiosClient.interceptors.request.use((config) => {
-      const accessToken = this.client.session.cached.accessToken;
-
-      if (accessToken) {
-        config.headers = config.headers || {};
-        config.headers.Authorization = `Bearer ${accessToken}`;
-      }
-
-      return config;
-    });
-
-    super(client, axiosClient);
+  private async getHeaders() {
+    const accessToken = this.client.session.cached.accessToken;
+    return { Authorization: `Bearer ${accessToken}` };
   }
 
   private async preflight() {
@@ -32,24 +19,56 @@ class RequestManager extends CacheManager<Axios> {
     throw new THXError(ErrorCode.SIGN_IN_REQUIRED);
   }
 
-  async get(url: string, config?: AxiosRequestConfig) {
+  async get(url: string, config?: RequestInit) {
     await this.preflight();
-    return this.cached.get(url, config);
+    const headers = await this.getHeaders();
+
+    return fetch(url, {
+      ...config,
+      mode: 'cors',
+      method: 'GET',
+      credentials: 'include',
+      headers: { ...config?.headers, ...headers },
+    });
   }
 
-  async post(url: string, config?: AxiosRequestConfig) {
+  async post(url: string, config?: RequestInit) {
     await this.preflight();
-    return this.cached.post(url, config);
+    const headers = await this.getHeaders();
+
+    return fetch(url, {
+      ...config,
+      mode: 'cors',
+      method: 'POST',
+      credentials: 'include',
+      headers: { ...config?.headers, ...headers },
+    });
   }
 
-  async patch(url: string, config?: AxiosRequestConfig) {
+  async patch(url: string, config?: RequestInit) {
     await this.preflight();
-    return this.cached.patch(url, config);
+    const headers = await this.getHeaders();
+
+    return fetch(url, {
+      ...config,
+      mode: 'cors',
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { ...config?.headers, ...headers },
+    });
   }
 
-  async put(url: string, config?: AxiosRequestConfig) {
+  async put(url: string, config?: RequestInit) {
     await this.preflight();
-    return this.cached.put(url, config);
+    const headers = await this.getHeaders();
+
+    return fetch(url, {
+      ...config,
+      mode: 'cors',
+      method: 'PUT',
+      credentials: 'include',
+      headers: { ...config?.headers, ...headers },
+    });
   }
 }
 
