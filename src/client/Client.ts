@@ -3,6 +3,7 @@ import { User, UserManager as BaseUserManager, UserManagerSettings } from 'oidc-
 import { URL_CONFIG } from '../configs';
 import TorusManager from '../managers/TorusManager';
 import CredentialManager from '../managers/CredentialManager';
+import ERC721Manager from '../managers/ERC721Manager'
 import RequestManager from '../managers/RequestManager';
 import AccountManager from '../managers/AccountManager';
 import SessionManager from '../managers/SessionManager';
@@ -14,6 +15,7 @@ export default class THXClient {
   authenticated = false;
 
   /* Internal managers */
+  erc721: ERC721Manager
   request: RequestManager;
   session: SessionManager;
   userManager: UserManager;
@@ -46,6 +48,7 @@ export default class THXClient {
     this.userManager = new UserManager(this, userManager);
     this.session = new SessionManager(this, {});
     this.account = new AccountManager(this);
+    this.erc721 = new ERC721Manager(this);
   }
 
   public async syncPrivateKey(user: User) {
