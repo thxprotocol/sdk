@@ -1,4 +1,3 @@
-
 import THXError from '../errors/Error';
 import ErrorCode from '../errors/ErrorCode';
 import { THXClient } from '../index';
@@ -11,7 +10,7 @@ class RequestManager extends BaseManager {
 
   private async getHeaders() {
     const accessToken = this.client.session.cached.accessToken;
-    return { Authorization: `Bearer ${accessToken}` };
+    return { authorization: `Bearer ${accessToken}` };
   }
 
   private async preflight() {
@@ -27,8 +26,8 @@ class RequestManager extends BaseManager {
       ...config,
       mode: 'cors',
       method: 'GET',
-      credentials: 'include',
-      headers: { ...config?.headers, ...headers },
+      credentials: 'omit',
+      headers: new Headers({ ...config?.headers, ...headers }),
     });
   }
 
@@ -40,8 +39,8 @@ class RequestManager extends BaseManager {
       ...config,
       mode: 'cors',
       method: 'POST',
-      credentials: 'include',
-      headers: { ...config?.headers, ...headers },
+      credentials: 'omit',
+      headers: new Headers({ ...config?.headers, ...headers }),
     });
   }
 
@@ -53,8 +52,8 @@ class RequestManager extends BaseManager {
       ...config,
       mode: 'cors',
       method: 'PATCH',
-      credentials: 'include',
-      headers: { ...config?.headers, ...headers },
+      credentials: 'omit',
+      headers: new Headers({ ...config?.headers, ...headers }),
     });
   }
 
@@ -66,8 +65,8 @@ class RequestManager extends BaseManager {
       ...config,
       mode: 'cors',
       method: 'PUT',
-      credentials: 'include',
-      headers: { ...config?.headers, ...headers },
+      credentials: 'omit',
+      headers: new Headers({ ...config?.headers, ...headers }),
     });
   }
 }
