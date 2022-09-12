@@ -1,5 +1,5 @@
 {
-  "name": "@thxprotocol/sdk",
+  "name": "@thxnetwork/sdk",
   "version": "1.0.0",
   "description": "My webpack project",
   "main": "dist/index.js",
@@ -19,6 +19,10 @@
   },
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thxprotocol/sdk.git"
+  },
   "dependencies": {
     "@toruslabs/customauth": "^10.1.0",
     "oidc-client-ts": "^2.0.5",
