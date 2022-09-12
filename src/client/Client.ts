@@ -3,7 +3,7 @@ import { User, UserManager as BaseUserManager, UserManagerSettings } from 'oidc-
 import { URL_CONFIG } from '../configs';
 import TorusManager from '../managers/TorusManager';
 import CredentialManager from '../managers/CredentialManager';
-import ERC721Manager from '../managers/ERC721Manager'
+import ERC721Manager from '../managers/ERC721Manager';
 import RequestManager from '../managers/RequestManager';
 import AccountManager from '../managers/AccountManager';
 import SessionManager from '../managers/SessionManager';
@@ -15,7 +15,7 @@ export default class THXClient {
   authenticated = false;
 
   /* Internal managers */
-  erc721: ERC721Manager
+  erc721: ERC721Manager;
   request: RequestManager;
   session: SessionManager;
   userManager: UserManager;
@@ -32,9 +32,9 @@ export default class THXClient {
       client_secret: rest.clientSecret,
       redirect_uri: rest.redirectUrl!,
       response_type: 'code',
-      post_logout_redirect_uri: window.location.host,
+      revokeTokenTypes: ['refresh_token'],
       resource: URL_CONFIG['API_URL'],
-      automaticSilentRenew: true,
+      automaticSilentRenew: false,
       loadUserInfo: false,
       scope: scopes,
     };
@@ -62,7 +62,6 @@ export default class THXClient {
 
   public async init() {
     if (this.initialized) return;
-
     const grantType = this.credential.cached.grantType;
 
     if (grantType === 'authorization_code') {

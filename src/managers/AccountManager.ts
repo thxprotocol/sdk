@@ -9,7 +9,12 @@ export default class AccountManager extends BaseManager {
   }
 
   async get() {
-    const res = await this.client.request.get(`${URL_CONFIG["API_URL"]}/v1/account`);
-    return await res.json();
+    try {
+      const res = await this.client.request.get(`${URL_CONFIG['API_URL']}/v1/account`);
+      return await res.json();
+    } catch (e) {
+      console.log(e);
+      return {};
+    }
   }
 }

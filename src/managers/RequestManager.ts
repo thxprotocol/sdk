@@ -22,52 +22,85 @@ class RequestManager extends BaseManager {
     await this.preflight();
     const headers = await this.getHeaders();
 
-    return fetch(url, {
+    const response = await fetch(url, {
       ...config,
       mode: 'cors',
       method: 'GET',
       credentials: 'omit',
       headers: new Headers({ ...config?.headers, ...headers }),
     });
+
+    if (response.status === 401) {
+      await this.silentSignin();
+    }
+
+
+    return response;
+  }
+
+  async silentSignin() {
+    return await this.client.userManager.cached.signinSilent();
   }
 
   async post(url: string, config?: RequestInit) {
     await this.preflight();
     const headers = await this.getHeaders();
 
-    return fetch(url, {
+    const response = await fetch(url, {
       ...config,
       mode: 'cors',
       method: 'POST',
       credentials: 'omit',
       headers: new Headers({ ...config?.headers, ...headers }),
     });
+
+
+    if (response.status === 401) {
+      
+      await this.silentSignin();
+    }
+
+    return response;
   }
 
   async patch(url: string, config?: RequestInit) {
     await this.preflight();
     const headers = await this.getHeaders();
 
-    return fetch(url, {
+    let response = await fetch(url, {
       ...config,
       mode: 'cors',
       method: 'PATCH',
       credentials: 'omit',
       headers: new Headers({ ...config?.headers, ...headers }),
     });
+
+    if (response.status === 401) {
+      
+      await this.silentSignin();
+    }
+
+    return response;
   }
 
   async put(url: string, config?: RequestInit) {
     await this.preflight();
     const headers = await this.getHeaders();
 
-    return fetch(url, {
+    const response = await fetch(url, {
       ...config,
       mode: 'cors',
       method: 'PUT',
       credentials: 'omit',
       headers: new Headers({ ...config?.headers, ...headers }),
     });
+
+    if (response.status === 401) {
+      
+      await this.silentSignin();
+    }
+
+    return response;
   }
 }
 
