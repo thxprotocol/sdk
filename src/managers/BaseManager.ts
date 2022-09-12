@@ -1,9 +1,5 @@
-import THXClient from '@/client/Client';
+import THXClient from '../client/Client';
 
-/**
- * Manages the API methods of a data model.
- * @abstract
- */
 export default class BaseManager {
   client: THXClient = null!;
 

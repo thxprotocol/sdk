@@ -1,8 +1,8 @@
-import THXClient from '@/client/Client';
+import THXClient from '../client/Client';
 import BaseManager from './BaseManager';
 
 class CacheManager<DataType> extends BaseManager {
-  _cached: DataType | null = null;
+  _cached: DataType = null!;
 
   constructor(client: THXClient, data: DataType) {
     super(client);

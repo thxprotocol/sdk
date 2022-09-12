@@ -1,0 +1,22 @@
+{
+  "presets": ["@babel/preset-env", "@babel/typescript"],
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "root": ["."],
+        "alias": {
+          "@/configs": "./src/configs",
+          "@/managers": "./src/managers",
+          "@/client": "./src/client",
+          "@/errors": "./src/errors",
+          "@/types": "./src/types",
+          "@/utils": "./src/utils",
+          "underscore": "lodash"
+        }
+      }
+    ],
+    "@babel/proposal-class-properties",
+    "@babel/proposal-object-rest-spread"
+  ]
+}

@@ -1,4 +1,3 @@
-import ErrorCode from './ErrorCode';
 import MESSAGE from './Messages';
 
 export default class THXError extends Error {
@@ -10,7 +9,7 @@ export default class THXError extends Error {
   }
 
   get name() {
-    return `${super.name} [${this.code}]`;
+    return `[${this.code}]`;
   }
 }
 
@@ -22,7 +21,6 @@ export default class THXError extends Error {
  * @ignore
  */
 function message(code: string, args: any): string {
-  if (!(code in ErrorCode)) throw new Error('Error code must be a valid THXErrorCode');
   const msg = MESSAGE[code];
   if (!msg) throw new Error(`No message associated with error code: ${code}.`);
   if (typeof msg === 'function') return msg(...args);
