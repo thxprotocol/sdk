@@ -1,8 +1,7 @@
-import axios from 'axios';
-
 import THXClient from '../client/Client';
 import CacheManager from './CacheManager';
 import TorusManager from './TorusManager';
+import { URL_CONFIG } from '../configs/index';
 
 import type { Credential } from '../types';
 
@@ -45,17 +44,17 @@ export default class CredentialManager extends CacheManager<Credential> {
       params.append('grant_type', 'client_credentials');
       params.append('scope', this.cached.scopes || '');
 
-      const response = await axios({
-        url: 'https://auth.thx.network/token',
+      const res = await fetch(`${URL_CONFIG['AUTH_URL']}/token`, {
         method: 'POST',
-        headers: {
+        headers: new Headers({
           'Content-Type': 'application/x-www-form-urlencoded',
           Authorization: code,
-        },
-        data: params,
+        }),
+        body: params,
       });
+      const data = await res.json();
 
-      this.client.session.update({ accessToken: response.data['access_token'] });
+      this.client.session.update({ accessToken: data['access_token'] });
 
       return true;
     } catch {
