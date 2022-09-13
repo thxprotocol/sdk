@@ -1,1 +1,9 @@
 export { Client as THXClient } from './client';
+export { default as TorusManager } from './managers/TorusManager';
+export { default as CredentialManager } from './managers/CredentialManager';
+export { default as ERC20Manager } from './managers/ERC20Manager';
+export { default as ERC721Manager } from './managers/ERC721Manager';
+export { default as RequestManager } from './managers/RequestManager';
+export { default as AccountManager } from './managers/AccountManager';
+export { default as SessionManager } from './managers/SessionManager';
+export { default as UserManager } from './managers/UserManager';
