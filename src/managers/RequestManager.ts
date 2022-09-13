@@ -1,3 +1,4 @@
+import { URL_CONFIG } from '../configs';
 import THXError from '../errors/Error';
 import ErrorCode from '../errors/ErrorCode';
 import { THXClient } from '../index';
@@ -34,12 +35,19 @@ class RequestManager extends BaseManager {
       await this.silentSignin();
     }
 
-
     return response;
   }
 
   async silentSignin() {
-    return await this.client.userManager.cached.signinSilent();
+    if (this.client.credential.cached.grantType === 'authorization_code') {
+      const clientId = this.client.credential.cached.clientId;
+      const name = `oidc.user:${URL_CONFIG['AUTH_URL']}:${clientId}`;
+      const user = await this.client.userManager.cached.signinSilent();
+      await this.client.userManager.cached.storeUser(user);
+      sessionStorage.setItem(name, JSON.stringify(user));
+    } else {
+      await this.client.credential.clientCredential();
+    }
   }
 
   async post(url: string, config?: RequestInit) {
@@ -54,9 +62,7 @@ class RequestManager extends BaseManager {
       headers: new Headers({ ...config?.headers, ...headers }),
     });
 
-
     if (response.status === 401) {
-      
       await this.silentSignin();
     }
 
@@ -76,7 +82,6 @@ class RequestManager extends BaseManager {
     });
 
     if (response.status === 401) {
-      
       await this.silentSignin();
     }
 
@@ -96,7 +101,6 @@ class RequestManager extends BaseManager {
     });
 
     if (response.status === 401) {
-      
       await this.silentSignin();
     }
 
