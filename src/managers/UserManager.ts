@@ -1,5 +1,6 @@
-import THXClient from '../client/Client';
 import { UserManager as BaseUserManager } from 'oidc-client-ts';
+
+import THXClient from '../client/Client';
 import CacheManager from './CacheManager';
 
 export default class UserManager extends CacheManager<BaseUserManager> {

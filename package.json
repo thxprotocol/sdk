@@ -10,8 +10,8 @@
   "scripts": {
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
-    "build:types": "tsc --emitDeclarationOnly",
-    "build": "rimraf ./dist && npm run build:js && build:types",
+    "build:types": "tsc -p tsconfig.build.json",
+    "build": "rimraf ./dist && npm run build:js && npm run build:types",
     "build:js": "webpack --mode=production --node-env=production",
     "build:dev": "webpack --mode=development",
     "build:prod": "webpack --mode=production --node-env=production",
@@ -26,6 +26,8 @@
     "web3": "^1.7.5"
   },
   "devDependencies": {
+    "@sentry/types": "^7.12.1",
+    "@types/elliptic": "^6.4.14",
     "@types/jest": "^28.1.6",
     "@types/node": "^18.7.6",
     "@types/webpack": "^5.28.0",
